@@ -35,8 +35,17 @@
         }
     </style>
     <script defer src="/_vercel/insights/script.js"></script>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-WJVJSFP9');</script>
 </head>
 <body class="bg-[#131313]">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WJVJSFP9"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <!-- Navigation -->
     <nav class="fixed top-0 w-full z-50 bg-[#131313]/80 backdrop-blur-xl border-b border-white/10 px-6 md:px-12 py-4 flex justify-between items-center">
@@ -211,8 +220,11 @@
     <script>
         document.addEventListener('click', function(e) {
             var el = e.target.closest('[data-event]');
-            if (el && window.va) {
-                window.va('event', { name: el.dataset.event });
+            if (el) {
+                var eventName = el.dataset.event;
+                if (window.va) window.va('event', { name: eventName });
+                window.dataLayer = window.dataLayer || [];
+                window.dataLayer.push({ event: eventName });
             }
         });
     </script>
