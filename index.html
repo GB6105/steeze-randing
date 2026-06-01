@@ -33,6 +33,60 @@
         @media (max-width: 768px) {
             .mobile-hide { display: none; }
         }
+
+        /* ── 가격 설문 모달 ── */
+        #price-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(0,0,0,0.85);
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        #price-modal.open { display: flex; }
+        #price-modal-box {
+            background: #1a1a1a;
+            border: 1px solid rgba(204,255,0,0.3);
+            border-radius: 16px;
+            padding: 2rem 2rem 1.5rem;
+            max-width: 460px;
+            width: 100%;
+            position: relative;
+        }
+        .price-opt {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border: 1.5px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: border-color 0.15s, background 0.15s;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+        .price-opt:hover { border-color: rgba(204,255,0,0.5); background: rgba(204,255,0,0.05); }
+        .price-opt.selected { border-color: #ccff00; background: rgba(204,255,0,0.1); color: #ccff00; }
+        .price-opt input[type=radio] { accent-color: #ccff00; width: 16px; height: 16px; flex-shrink: 0; }
+        #price-submit {
+            width: 100%;
+            margin-top: 8px;
+            background: #ccff00;
+            color: #000;
+            font-weight: 900;
+            padding: 14px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+            transition: opacity 0.15s;
+        }
+        #price-submit:disabled { opacity: 0.4; cursor: default; }
+        #price-submit:hover:not(:disabled) { opacity: 0.9; }
+        #price-thanks { display: none; text-align: center; padding: 1rem 0 0.5rem; }
     </style>
     <script defer src="/_vercel/insights/script.js"></script>
     <!-- Google Tag Manager -->
@@ -46,6 +100,47 @@
     <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WJVJSFP9"
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <!-- ── 가격 설문 모달 ── -->
+    <div id="price-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div id="price-modal-box">
+            <p style="font-size:11px;font-weight:700;letter-spacing:0.1em;color:#ccff00;text-transform:uppercase;margin:0 0 8px;">사전 등록 완료 🛹</p>
+            <h2 id="modal-title" style="font-size:20px;font-weight:900;line-height:1.3;margin:0 0 6px;">딱 하나만 여쭤볼게요.</h2>
+            <p style="font-size:13px;color:rgba(255,255,255,0.5);margin:0 0 20px;line-height:1.6;">
+                Steeze가 출시되면 <strong style="color:#fff;">월 얼마</strong>라면 바로 결제하시겠어요?<br>
+                이 답변이 실제 가격 결정에 반영됩니다.
+            </p>
+
+            <div id="price-options">
+                <label class="price-opt">
+                    <input type="radio" name="price" value="4900"> ₩4,900 / 월
+                    <span style="margin-left:auto;font-size:11px;color:rgba(255,255,255,0.35);font-weight:400;">커피 한 잔</span>
+                </label>
+                <label class="price-opt">
+                    <input type="radio" name="price" value="9900"> ₩9,900 / 월
+                    <span style="margin-left:auto;font-size:11px;color:rgba(255,255,255,0.35);font-weight:400;">넷플릭스 수준</span>
+                </label>
+                <label class="price-opt">
+                    <input type="radio" name="price" value="14900"> ₩14,900 / 월
+                    <span style="margin-left:auto;font-size:11px;color:rgba(255,255,255,0.35);font-weight:400;">코치 1회의 1/3</span>
+                </label>
+                <label class="price-opt">
+                    <input type="radio" name="price" value="no"> 결제 안 할 것 같아요
+                    <span style="margin-left:auto;font-size:11px;color:rgba(255,255,255,0.35);font-weight:400;"></span>
+                </label>
+            </div>
+
+            <button id="price-submit" disabled>응답 제출하기</button>
+
+            <div id="price-thanks">
+                <p style="font-size:22px;margin:0 0 6px;">🙏</p>
+                <p style="font-weight:700;font-size:15px;margin:0 0 4px;">감사합니다!</p>
+                <p style="font-size:12px;color:rgba(255,255,255,0.45);">답변이 제품 방향에 큰 도움이 됩니다.</p>
+            </div>
+
+            <button id="modal-skip" style="display:block;width:100%;margin-top:12px;background:none;border:none;color:rgba(255,255,255,0.25);font-size:11px;cursor:pointer;font-family:inherit;">건너뛰기</button>
+        </div>
+    </div>
 
     <!-- Navigation -->
     <nav class="fixed top-0 w-full z-50 bg-[#131313]/80 backdrop-blur-xl border-b border-white/10 px-6 md:px-12 py-4 flex justify-between items-center">
@@ -63,7 +158,7 @@
     <header class="relative min-h-screen flex items-center px-6 md:px-20 pt-20 overflow-hidden">
         <img src="https://images.unsplash.com/photo-1547447134-cd3f5c716030?w=1920&q=80" alt="Skateboarder" class="absolute inset-0 w-full h-full object-cover opacity-50">
         <div class="absolute inset-0 bg-gradient-to-t from-[#131313] via-transparent to-transparent"></div>
-        
+
         <div class="relative z-10 max-w-3xl">
             <span class="inline-block px-3 py-1 bg-[#ccff00]/20 text-[#ccff00] border border-[#ccff00]/50 text-[10px] md:text-xs font-bold mb-4 md:mb-6 uppercase tracking-widest rounded-sm">The Future of Skating</span>
             <h1 class="text-4xl md:text-7xl font-black leading-tight mb-4 md:mb-8">
@@ -75,7 +170,7 @@
             </p>
             <a href="#pre-register" data-event="pre_register_hero" class="w-full md:w-auto bg-[#ccff00] text-black px-10 py-4 rounded-lg font-black text-base md:text-lg neon-glow hover:scale-105 transition-transform uppercase tracking-tight inline-block text-center">사전 등록하기</a>
         </div>
-        
+
         <div class="absolute bottom-10 left-1/2 -translate-x-1/2 text-gray-500 animate-bounce hidden md:block">
             <span class="text-[10px] font-bold uppercase tracking-widest">Scroll to Analyze</span>
             <svg class="w-4 h-4 mx-auto mt-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
@@ -146,8 +241,6 @@
             <p class="text-gray-500 text-center mb-16 text-sm md:text-base">실제 AI 분석 피드백 예시</p>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-                <!-- Feedback Card 1 -->
                 <div class="border border-white/10 rounded-2xl overflow-hidden bg-white/[0.02]">
                     <div class="bg-[#ccff00]/10 border-b border-[#ccff00]/20 px-6 py-4 flex items-center gap-3">
                         <span class="text-[#ccff00] font-black text-xs uppercase tracking-widest">킥플립 분석</span>
@@ -170,17 +263,15 @@
                         <div class="space-y-3">
                             <div class="flex gap-3 items-start">
                                 <span class="text-[#ccff00] mt-0.5 shrink-0">→</span>
-                                <p class="text-gray-300 text-sm leading-relaxed">플릭 시점이 <span class="text-white font-bold">0.08초 늦습니다.</span> 데크가 떠오르는 순간보다 일찍 플릭을 시작하세요.</p>
+                                <p class="text-gray-300 text-sm leading-relaxed">플릭 시점이 <span class="text-white font-bold">0.08초 늦습니다.</span></p>
                             </div>
                             <div class="flex gap-3 items-start">
                                 <span class="text-[#ccff00] mt-0.5 shrink-0">→</span>
-                                <p class="text-gray-300 text-sm leading-relaxed">앞 무릎이 <span class="text-white font-bold">1.2초빨리 떨어져서 랜딩 시간이 부족</span>합니다. 공중에서 무릎을 올린 상태를 유지하세요.</p>
+                                <p class="text-gray-300 text-sm leading-relaxed">앞 무릎이 <span class="text-white font-bold">1.2초 빨리 떨어져서 랜딩 시간 부족.</span></p>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Feedback Card 2 -->
                 <div class="border border-white/10 rounded-2xl overflow-hidden bg-white/[0.02]">
                     <div class="bg-[#ccff00]/10 border-b border-[#ccff00]/20 px-6 py-4 flex items-center gap-3">
                         <span class="text-[#ccff00] font-black text-xs uppercase tracking-widest">알리 분석</span>
@@ -188,30 +279,28 @@
                     </div>
                     <div class="p-6">
                         <div class="mb-6">
-                            <div class="flex justify-between text-xs text-gray-500 mb-2">
-                                <span>앞</span>
+                            <div class="flex justify-between text-xs mb-2">
+                                <span class="text-gray-400">앞</span>
                                 <span class="text-white font-bold">무게 중심 분포</span>
-                                <span>뒤</span>
+                                <span class="text-gray-400">뒤</span>
                             </div>
                             <div class="h-3 bg-white/5 rounded-full overflow-hidden">
                                 <div class="h-full bg-gradient-to-r from-[#ccff00]/30 to-[#ccff00] rounded-full" style="width:65%; margin-left:35%"></div>
                             </div>
-                            <p class="text-xs text-red-400 mt-2 font-bold">착지 시 뒤쪽으로 15% 치우침 감지</p>
+                            <p class="text-xs text-red-400 mt-2 font-bold">착지 시 뒤쪽 15% 치우침 감지</p>
                         </div>
                         <div class="space-y-3">
                             <div class="flex gap-3 items-start">
                                 <span class="text-[#ccff00] mt-0.5 shrink-0">→</span>
-                                <p class="text-gray-300 text-sm leading-relaxed">착지 시 <span class="text-white font-bold">무릎을 12도 더 굽히면</span> 균형이 잡힙니다.</p>
+                                <p class="text-gray-300 text-sm leading-relaxed">착지 시 <span class="text-white font-bold">무릎을 12도 더 굽히면</span> 균형 잡힙니다.</p>
                             </div>
                             <div class="flex gap-3 items-start">
                                 <span class="text-[#ccff00] mt-0.5 shrink-0">→</span>
-                                <p class="text-gray-300 text-sm leading-relaxed">점프 높이 <span class="text-white font-bold">+8cm 향상</span> 가능. 과한 스쿼트보다 가벼운 팝을 치는데 집중해보세요.</p>
+                                <p class="text-gray-300 text-sm leading-relaxed">점프 높이 <span class="text-white font-bold">+8cm 향상</span> 가능.</p>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Feedback Card 3 -->
                 <div class="border border-white/10 rounded-2xl overflow-hidden bg-white/[0.02]">
                     <div class="bg-[#ccff00]/10 border-b border-[#ccff00]/20 px-6 py-4 flex items-center gap-3">
                         <span class="text-[#ccff00] font-black text-xs uppercase tracking-widest">주간 성장 리포트</span>
@@ -219,42 +308,25 @@
                     <div class="p-6">
                         <div class="space-y-4 mb-6">
                             <div>
-                                <div class="flex justify-between text-xs mb-1">
-                                    <span class="text-gray-400">킥플립</span>
-                                    <span class="text-[#ccff00] font-bold">+44%</span>
-                                </div>
-                                <div class="h-2 bg-white/5 rounded-full overflow-hidden">
-                                    <div class="h-full bg-[#ccff00] rounded-full" style="width:67%"></div>
-                                </div>
+                                <div class="flex justify-between text-xs mb-1"><span class="text-gray-400">킥플립</span><span class="text-[#ccff00] font-bold">+44%</span></div>
+                                <div class="h-2 bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-[#ccff00] rounded-full" style="width:67%"></div></div>
                             </div>
                             <div>
-                                <div class="flex justify-between text-xs mb-1">
-                                    <span class="text-gray-400">알리</span>
-                                    <span class="text-[#ccff00] font-bold">+21%</span>
-                                </div>
-                                <div class="h-2 bg-white/5 rounded-full overflow-hidden">
-                                    <div class="h-full bg-[#ccff00] rounded-full" style="width:82%"></div>
-                                </div>
+                                <div class="flex justify-between text-xs mb-1"><span class="text-gray-400">알리</span><span class="text-[#ccff00] font-bold">+21%</span></div>
+                                <div class="h-2 bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-[#ccff00] rounded-full" style="width:82%"></div></div>
                             </div>
                             <div>
-                                <div class="flex justify-between text-xs mb-1">
-                                    <span class="text-gray-400">힐플립</span>
-                                    <span class="text-gray-500 font-bold">진행 중</span>
-                                </div>
-                                <div class="h-2 bg-white/5 rounded-full overflow-hidden">
-                                    <div class="h-full bg-white/20 rounded-full" style="width:35%"></div>
-                                </div>
+                                <div class="flex justify-between text-xs mb-1"><span class="text-gray-400">힐플립</span><span class="text-gray-500 font-bold">진행 중</span></div>
+                                <div class="h-2 bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-white/20 rounded-full" style="width:35%"></div></div>
                             </div>
                         </div>
                         <div class="flex gap-3 items-start">
                             <span class="text-[#ccff00] mt-0.5 shrink-0">→</span>
-                            <p class="text-gray-300 text-sm leading-relaxed">이번 주 <span class="text-white font-bold">총 12회 연습</span> 중 핵심 교정 포인트 3개 달성. 힐플립 집중 훈련을 추천합니다.</p>
+                            <p class="text-gray-300 text-sm leading-relaxed">이번 주 <span class="text-white font-bold">총 12회 연습</span> 중 핵심 교정 포인트 3개 달성.</p>
                         </div>
                     </div>
                 </div>
-
             </div>
-
             <div class="mt-12 text-center">
                 <a href="#pre-register" class="bg-[#ccff00] text-black px-10 py-4 rounded-lg font-black text-base md:text-lg neon-glow hover:scale-105 transition-transform uppercase tracking-tight inline-block">지금 사전 등록하기</a>
             </div>
@@ -265,12 +337,8 @@
     <section id="analysis" class="py-20 md:py-40 px-6 md:px-20">
         <div class="max-w-7xl mx-auto">
             <h2 class="text-3xl md:text-5xl font-black text-center mb-20 md:mb-32 italic">4단계로 완성되는 피드백</h2>
-            
             <div class="relative grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-4">
-                <!-- Connector Line (Desktop) -->
                 <div class="hidden md:block absolute top-8 left-0 w-full h-0.5 bg-white/10 z-0"></div>
-                
-                <!-- Steps -->
                 <div class="relative z-10 text-center flex flex-col items-center">
                     <div class="w-16 h-16 rounded-full bg-[#1c1b1b] border-2 border-[#ccff00] flex items-center justify-center mb-6 neon-glow">
                         <span class="text-[#ccff00] font-black italic">01</span>
@@ -278,7 +346,6 @@
                     <h4 class="text-lg md:text-xl font-bold mb-3 uppercase">영상 업로드</h4>
                     <p class="text-gray-500 text-xs md:text-sm px-4">연습하는 영상을 휴대폰으로 간편하게 업로드하세요.</p>
                 </div>
-                
                 <div class="relative z-10 text-center flex flex-col items-center">
                     <div class="w-16 h-16 rounded-full bg-[#1c1b1b] border-2 border-white/10 flex items-center justify-center mb-6">
                         <span class="text-white/30 font-black italic">02</span>
@@ -286,7 +353,6 @@
                     <h4 class="text-lg md:text-xl font-bold mb-3 uppercase">AI 분석</h4>
                     <p class="text-gray-500 text-xs md:text-sm px-4">Steeze AI 엔진이 관절과 동작을 실시간 분석합니다.</p>
                 </div>
-                
                 <div class="relative z-10 text-center flex flex-col items-center">
                     <div class="w-16 h-16 rounded-full bg-[#1c1b1b] border-2 border-white/10 flex items-center justify-center mb-6">
                         <span class="text-white/30 font-black italic">03</span>
@@ -294,7 +360,6 @@
                     <h4 class="text-lg md:text-xl font-bold mb-3 uppercase">프레임 단위 비교</h4>
                     <p class="text-gray-500 text-xs md:text-sm px-4">프로의 정석 자세와 당신의 자세를 나란히 비교합니다.</p>
                 </div>
-                
                 <div class="relative z-10 text-center flex flex-col items-center">
                     <div class="w-16 h-16 rounded-full bg-[#1c1b1b] border-2 border-white/10 flex items-center justify-center mb-6">
                         <span class="text-white/30 font-black italic">04</span>
@@ -314,7 +379,7 @@
                 지금 사전 등록하고<br>가장 먼저 피드백을 받아보세요.
             </h2>
             <p class="text-black/60 font-bold mb-10 md:mb-16 text-sm md:text-base">사전 등록 참여자에게는 정식 런칭 시 특별한 혜택을 드립니다.</p>
-            
+
             <div class="flex flex-col md:flex-row gap-4 max-w-2xl mx-auto">
                 <input id="signup-email" type="email" placeholder="이메일 주소를 입력하세요" class="flex-1 bg-black/5 border-2 border-black/20 rounded-lg px-6 py-4 placeholder:text-black/40 focus:outline-none focus:border-black transition-colors font-bold">
                 <button id="signup-btn" data-event="signup_complete" class="bg-black text-[#ccff00] px-10 py-4 rounded-lg font-black text-lg hover:scale-105 transition-transform">사전 등록 완료</button>
@@ -340,8 +405,10 @@
         </div>
     </footer>
 
-
     <script>
+        var SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwvTIEQ_ASCR-kRmDfcUEn5w8BiCE_SsU-BFU83Pvq9x-EACwNB0JwP3tv0V8Pqyrba1Q/exec';
+
+        /* ── 이벤트 트래킹 ── */
         document.addEventListener('click', function(e) {
             var el = e.target.closest('[data-event]');
             if (el) {
@@ -352,6 +419,7 @@
             }
         });
 
+        /* ── 상세 기능 토글 ── */
         var detailShown = false;
         document.getElementById('view-features-btn').addEventListener('click', function() {
             var section = document.getElementById('detail-features');
@@ -372,6 +440,57 @@
             }
         });
 
+        /* ── 가격 모달 ── */
+        var modal = document.getElementById('price-modal');
+        var submitBtn = document.getElementById('price-submit');
+        var lastEmail = '';
+
+        document.querySelectorAll('.price-opt input[type=radio]').forEach(function(radio) {
+            radio.addEventListener('change', function() {
+                document.querySelectorAll('.price-opt').forEach(function(l) { l.classList.remove('selected'); });
+                this.closest('.price-opt').classList.add('selected');
+                submitBtn.disabled = false;
+                window.dataLayer = window.dataLayer || [];
+                window.dataLayer.push({ event: 'price_option_selected', price: this.value });
+            });
+        });
+
+        submitBtn.addEventListener('click', function() {
+            var selected = document.querySelector('.price-opt input[type=radio]:checked');
+            if (!selected) return;
+            var price = selected.value;
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = '저장 중...';
+
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({ event: 'price_survey_submit', price: price });
+            if (window.va) window.va('event', { name: 'price_survey_submit' });
+
+            fetch(SHEETS_URL, {
+                method: 'POST',
+                body: JSON.stringify({ email: lastEmail, price_wtp: price, type: 'price_survey' })
+            }).catch(function() {});
+
+            document.getElementById('price-options').style.display = 'none';
+            submitBtn.style.display = 'none';
+            document.getElementById('modal-skip').style.display = 'none';
+            document.getElementById('price-thanks').style.display = 'block';
+
+            setTimeout(function() { modal.classList.remove('open'); }, 2000);
+        });
+
+        document.getElementById('modal-skip').addEventListener('click', function() {
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({ event: 'price_survey_skip' });
+            modal.classList.remove('open');
+        });
+
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) modal.classList.remove('open');
+        });
+
+        /* ── 이메일 등록 ── */
         document.getElementById('signup-btn').addEventListener('click', function() {
             var email = document.getElementById('signup-email').value.trim();
             var msg = document.getElementById('signup-msg');
@@ -386,9 +505,9 @@
             btn.disabled = true;
             btn.textContent = '등록 중...';
 
-            fetch('https://script.google.com/macros/s/AKfycbwvTIEQ_ASCR-kRmDfcUEn5w8BiCE_SsU-BFU83Pvq9x-EACwNB0JwP3tv0V8Pqyrba1Q/exec', {
+            fetch(SHEETS_URL, {
                 method: 'POST',
-                body: JSON.stringify({ email: email })
+                body: JSON.stringify({ email: email, type: 'signup' })
             })
             .then(function(res) { return res.json(); })
             .then(function(data) {
@@ -396,6 +515,8 @@
                 msg.style.color = '#16a34a';
                 document.getElementById('signup-email').value = '';
                 btn.textContent = '등록 완료 ✓';
+                lastEmail = email;
+                modal.classList.add('open');
             })
             .catch(function() {
                 msg.textContent = '오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
