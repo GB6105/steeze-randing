@@ -133,7 +133,130 @@
                 </div>
             </div>
             <div class="mt-16 text-center">
-                <button data-event="view_features" class="text-[#ccff00] border border-[#ccff00]/30 px-8 py-3 rounded-lg font-bold text-sm hover:bg-[#ccff00]/10 transition-all">상세 기능 보기</button>
+                <button id="view-features-btn" class="text-[#ccff00] border border-[#ccff00]/30 px-8 py-3 rounded-lg font-bold text-sm hover:bg-[#ccff00]/10 transition-all">상세 기능 보기 ↓</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Detail Features Section (hidden) -->
+    <section id="detail-features" class="hidden py-20 md:py-32 px-6 md:px-20 bg-[#0a0a0a]">
+        <div class="max-w-7xl mx-auto">
+            <div class="w-12 h-1 bg-[#ccff00] mb-8 mx-auto"></div>
+            <h2 class="text-3xl md:text-5xl font-black text-center mb-4">이런 피드백을 받게 됩니다</h2>
+            <p class="text-gray-500 text-center mb-16 text-sm md:text-base">실제 AI 분석 피드백 예시</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <!-- Feedback Card 1 -->
+                <div class="border border-white/10 rounded-2xl overflow-hidden bg-white/[0.02]">
+                    <div class="bg-[#ccff00]/10 border-b border-[#ccff00]/20 px-6 py-4 flex items-center gap-3">
+                        <span class="text-[#ccff00] font-black text-xs uppercase tracking-widest">킥플립 분석</span>
+                        <span class="ml-auto text-[10px] bg-[#ccff00]/20 text-[#ccff00] px-2 py-1 rounded-full font-bold">팝 타이밍</span>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="text-center">
+                                <div class="text-2xl font-black text-red-400">23%</div>
+                                <div class="text-[10px] text-gray-500 mt-1">현재 성공률</div>
+                            </div>
+                            <div class="flex-1 h-px bg-white/10 relative">
+                                <div class="absolute inset-y-0 left-0 bg-[#ccff00] rounded-full" style="width:60%"></div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-black text-[#ccff00]">67%</div>
+                                <div class="text-[10px] text-gray-500 mt-1">예상 성공률</div>
+                            </div>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex gap-3 items-start">
+                                <span class="text-[#ccff00] mt-0.5 shrink-0">→</span>
+                                <p class="text-gray-300 text-sm leading-relaxed">팝 시점이 <span class="text-white font-bold">0.08초 늦습니다.</span> 데크가 지면에 닿는 순간보다 일찍 점프를 시작하세요.</p>
+                            </div>
+                            <div class="flex gap-3 items-start">
+                                <span class="text-[#ccff00] mt-0.5 shrink-0">→</span>
+                                <p class="text-gray-300 text-sm leading-relaxed">앞발 슬라이드 각도가 <span class="text-white font-bold">12° 부족</span>합니다. 발목을 더 회전시키세요.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feedback Card 2 -->
+                <div class="border border-white/10 rounded-2xl overflow-hidden bg-white/[0.02]">
+                    <div class="bg-[#ccff00]/10 border-b border-[#ccff00]/20 px-6 py-4 flex items-center gap-3">
+                        <span class="text-[#ccff00] font-black text-xs uppercase tracking-widest">올리 분석</span>
+                        <span class="ml-auto text-[10px] bg-[#ccff00]/20 text-[#ccff00] px-2 py-1 rounded-full font-bold">무게 중심</span>
+                    </div>
+                    <div class="p-6">
+                        <div class="mb-6">
+                            <div class="flex justify-between text-xs text-gray-500 mb-2">
+                                <span>앞</span>
+                                <span class="text-white font-bold">무게 중심 분포</span>
+                                <span>뒤</span>
+                            </div>
+                            <div class="h-3 bg-white/5 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-[#ccff00]/30 to-[#ccff00] rounded-full" style="width:65%; margin-left:35%"></div>
+                            </div>
+                            <p class="text-xs text-red-400 mt-2 font-bold">착지 시 뒤쪽으로 15% 치우침 감지</p>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex gap-3 items-start">
+                                <span class="text-[#ccff00] mt-0.5 shrink-0">→</span>
+                                <p class="text-gray-300 text-sm leading-relaxed">착지 시 <span class="text-white font-bold">무릎을 5cm 더 앞으로</span> 이동하면 균형이 잡힙니다.</p>
+                            </div>
+                            <div class="flex gap-3 items-start">
+                                <span class="text-[#ccff00] mt-0.5 shrink-0">→</span>
+                                <p class="text-gray-300 text-sm leading-relaxed">점프 높이 <span class="text-white font-bold">+18cm 향상</span> 가능. 팔 스윙을 더 활용하세요.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feedback Card 3 -->
+                <div class="border border-white/10 rounded-2xl overflow-hidden bg-white/[0.02]">
+                    <div class="bg-[#ccff00]/10 border-b border-[#ccff00]/20 px-6 py-4 flex items-center gap-3">
+                        <span class="text-[#ccff00] font-black text-xs uppercase tracking-widest">주간 성장 리포트</span>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-4 mb-6">
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-gray-400">킥플립</span>
+                                    <span class="text-[#ccff00] font-bold">+44%</span>
+                                </div>
+                                <div class="h-2 bg-white/5 rounded-full overflow-hidden">
+                                    <div class="h-full bg-[#ccff00] rounded-full" style="width:67%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-gray-400">올리</span>
+                                    <span class="text-[#ccff00] font-bold">+21%</span>
+                                </div>
+                                <div class="h-2 bg-white/5 rounded-full overflow-hidden">
+                                    <div class="h-full bg-[#ccff00] rounded-full" style="width:82%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-gray-400">힐플립</span>
+                                    <span class="text-gray-500 font-bold">진행 중</span>
+                                </div>
+                                <div class="h-2 bg-white/5 rounded-full overflow-hidden">
+                                    <div class="h-full bg-white/20 rounded-full" style="width:35%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3 items-start">
+                            <span class="text-[#ccff00] mt-0.5 shrink-0">→</span>
+                            <p class="text-gray-300 text-sm leading-relaxed">이번 주 <span class="text-white font-bold">총 12회 연습</span> 중 핵심 교정 포인트 3개 달성. 힐플립 집중 훈련을 추천합니다.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="mt-12 text-center">
+                <a href="#pre-register" class="bg-[#ccff00] text-black px-10 py-4 rounded-lg font-black text-base md:text-lg neon-glow hover:scale-105 transition-transform uppercase tracking-tight inline-block">지금 사전 등록하기</a>
             </div>
         </div>
     </section>
@@ -226,6 +349,26 @@
                 if (window.va) window.va('event', { name: eventName });
                 window.dataLayer = window.dataLayer || [];
                 window.dataLayer.push({ event: eventName });
+            }
+        });
+
+        var detailShown = false;
+        document.getElementById('view-features-btn').addEventListener('click', function() {
+            var section = document.getElementById('detail-features');
+            var isHidden = section.classList.contains('hidden');
+            if (isHidden) {
+                section.classList.remove('hidden');
+                this.textContent = '기능 접기 ↑';
+                section.scrollIntoView({ behavior: 'smooth' });
+                if (!detailShown) {
+                    detailShown = true;
+                    if (window.va) window.va('event', { name: 'view_features' });
+                    window.dataLayer = window.dataLayer || [];
+                    window.dataLayer.push({ event: 'view_features' });
+                }
+            } else {
+                section.classList.add('hidden');
+                this.textContent = '상세 기능 보기 ↓';
             }
         });
 
