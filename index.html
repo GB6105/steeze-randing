@@ -89,6 +89,21 @@
         #price-thanks { display: none; text-align: center; padding: 1rem 0 0.5rem; }
     </style>
     <script defer src="/_vercel/insights/script.js"></script>
+    <!-- Meta Pixel -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window,document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init','863870766765414');
+    fbq('track','PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=863870766765414&ev=PageView&noscript=1"/></noscript>
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -263,11 +278,11 @@
                         <div class="space-y-3">
                             <div class="flex gap-3 items-start">
                                 <span class="text-[#ccff00] mt-0.5 shrink-0">→</span>
-                                <p class="text-gray-300 text-sm leading-relaxed">플릭 시점이 <span class="text-white font-bold">0.08초 늦습니다.</span></p>
+                                <p class="text-gray-300 text-sm leading-relaxed">플릭 시점이 <span class="text-white font-bold">0.08초 늦습니다.</span> 보드가 떠올랐을 떄 더 빠르게 반응해보세요</p>
                             </div>
                             <div class="flex gap-3 items-start">
                                 <span class="text-[#ccff00] mt-0.5 shrink-0">→</span>
-                                <p class="text-gray-300 text-sm leading-relaxed">앞 무릎이 <span class="text-white font-bold">1.2초 빨리 떨어져서 랜딩 시간 부족.</span></p>
+                                <p class="text-gray-300 text-sm leading-relaxed">앞 무릎이 <span class="text-white font-bold">1.2초 빨리 떨어져서 랜딩 시간 부족.</span> 공중에서 무릎을 굽힌채로 유지해보세요</p>
                             </div>
                         </div>
                     </div>
@@ -433,6 +448,7 @@
                     if (window.va) window.va('event', { name: 'view_features' });
                     window.dataLayer = window.dataLayer || [];
                     window.dataLayer.push({ event: 'view_features' });
+                    if (window.fbq) fbq('track', 'ViewContent');
                 }
             } else {
                 section.classList.add('hidden');
@@ -515,6 +531,7 @@
                 msg.style.color = '#16a34a';
                 document.getElementById('signup-email').value = '';
                 btn.textContent = '등록 완료 ✓';
+                if (window.fbq) fbq('track', 'Lead');
                 lastEmail = email;
                 modal.classList.add('open');
             })
