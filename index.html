@@ -71,7 +71,7 @@
         .price-opt:hover { border-color: rgba(204,255,0,0.5); background: rgba(204,255,0,0.05); }
         .price-opt.selected { border-color: #ccff00; background: rgba(204,255,0,0.1); color: #ccff00; }
         .price-opt input[type=radio] { accent-color: #ccff00; width: 16px; height: 16px; flex-shrink: 0; }
-        #price-submit {
+        #price-submit, #intent-submit, #reason-submit {
             width: 100%;
             margin-top: 8px;
             background: #ccff00;
@@ -84,8 +84,8 @@
             font-size: 15px;
             transition: opacity 0.15s;
         }
-        #price-submit:disabled { opacity: 0.4; cursor: default; }
-        #price-submit:hover:not(:disabled) { opacity: 0.9; }
+        #price-submit:disabled, #intent-submit:disabled, #reason-submit:disabled { opacity: 0.4; cursor: default; }
+        #price-submit:hover:not(:disabled), #intent-submit:hover:not(:disabled), #reason-submit:hover:not(:disabled) { opacity: 0.9; }
         #price-thanks { display: none; text-align: center; padding: 1rem 0 0.5rem; }
     </style>
     <script defer src="/_vercel/insights/script.js"></script>
@@ -121,12 +121,26 @@
         <div id="price-modal-box">
             <p style="font-size:11px;font-weight:700;letter-spacing:0.1em;color:#ccff00;text-transform:uppercase;margin:0 0 8px;">사전 등록 완료 🛹</p>
             <h2 id="modal-title" style="font-size:20px;font-weight:900;line-height:1.3;margin:0 0 6px;">딱 하나만 여쭤볼게요.</h2>
-            <p style="font-size:13px;color:rgba(255,255,255,0.5);margin:0 0 20px;line-height:1.6;">
-                Steeze가 출시되면 <strong style="color:#fff;">월 얼마</strong>라면 바로 결제하시겠어요?<br>
+            <p id="modal-subtitle" style="font-size:13px;color:rgba(255,255,255,0.5);margin:0 0 20px;line-height:1.6;">
+                Steeze가 출시되면 <strong style="color:#fff;">결제할 의향</strong>이 있으신가요?<br>
                 이 답변이 실제 가격 결정에 반영됩니다.
             </p>
 
-            <div id="price-options">
+            <!-- Step 1: 결제 의향 -->
+            <div id="step-intent">
+                <div id="intent-options">
+                    <label class="price-opt">
+                        <input type="radio" name="intent" value="yes"> 결제하겠습니다
+                    </label>
+                    <label class="price-opt">
+                        <input type="radio" name="intent" value="no"> 결제할 의향이 없습니다
+                    </label>
+                </div>
+                <button id="intent-submit" disabled>다음</button>
+            </div>
+
+            <!-- Step 2A: 가격 선택 -->
+            <div id="step-price" style="display:none">
                 <label class="price-opt">
                     <input type="radio" name="price" value="4900"> ₩4,900 / 월
                     <span style="margin-left:auto;font-size:11px;color:rgba(255,255,255,0.35);font-weight:400;">커피 한 잔</span>
@@ -139,13 +153,19 @@
                     <input type="radio" name="price" value="14900"> ₩14,900 / 월
                     <span style="margin-left:auto;font-size:11px;color:rgba(255,255,255,0.35);font-weight:400;">코치 1회의 1/3</span>
                 </label>
-                <label class="price-opt">
-                    <input type="radio" name="price" value="no"> 결제 안 할 것 같아요
-                    <span style="margin-left:auto;font-size:11px;color:rgba(255,255,255,0.35);font-weight:400;"></span>
-                </label>
+                <button id="price-submit" disabled>응답 제출하기</button>
             </div>
 
-            <button id="price-submit" disabled>응답 제출하기</button>
+            <!-- Step 2B: 이유 선택 -->
+            <div id="step-reason" style="display:none">
+                <label class="price-opt">
+                    <input type="radio" name="reason" value="no_result"> 결과물을 못봐서 신뢰가 안가요
+                </label>
+                <label class="price-opt">
+                    <input type="radio" name="reason" value="prefer_offline"> 대면이 나을 것 같아요
+                </label>
+                <button id="reason-submit" disabled>응답 제출하기</button>
+            </div>
 
             <div id="price-thanks">
                 <p style="font-size:22px;margin:0 0 6px;">🙏</p>
@@ -458,26 +478,57 @@
 
         /* ── 가격 모달 ── */
         var modal = document.getElementById('price-modal');
-        var submitBtn = document.getElementById('price-submit');
         var lastEmail = '';
 
-        document.querySelectorAll('.price-opt input[type=radio]').forEach(function(radio) {
+        function showThanks() {
+            document.getElementById('step-intent').style.display = 'none';
+            document.getElementById('step-price').style.display = 'none';
+            document.getElementById('step-reason').style.display = 'none';
+            document.getElementById('modal-skip').style.display = 'none';
+            document.getElementById('price-thanks').style.display = 'block';
+            setTimeout(function() { modal.classList.remove('open'); }, 2000);
+        }
+
+        /* Step 1: 결제 의향 */
+        document.querySelectorAll('#intent-options input[type=radio]').forEach(function(radio) {
             radio.addEventListener('change', function() {
-                document.querySelectorAll('.price-opt').forEach(function(l) { l.classList.remove('selected'); });
+                document.querySelectorAll('#intent-options .price-opt').forEach(function(l) { l.classList.remove('selected'); });
                 this.closest('.price-opt').classList.add('selected');
-                submitBtn.disabled = false;
-                window.dataLayer = window.dataLayer || [];
-                window.dataLayer.push({ event: 'price_option_selected', price: this.value });
+                document.getElementById('intent-submit').disabled = false;
             });
         });
 
-        submitBtn.addEventListener('click', function() {
-            var selected = document.querySelector('.price-opt input[type=radio]:checked');
+        document.getElementById('intent-submit').addEventListener('click', function() {
+            var selected = document.querySelector('#intent-options input[type=radio]:checked');
+            if (!selected) return;
+            document.getElementById('step-intent').style.display = 'none';
+            if (selected.value === 'yes') {
+                document.getElementById('modal-title').textContent = '얼마라면 바로 결제하시겠어요?';
+                document.getElementById('modal-subtitle').innerHTML = '출시 시 <strong style="color:#fff;">월 구독 가격</strong>을 선택해주세요.<br>이 답변이 실제 가격 결정에 반영됩니다.';
+                document.getElementById('step-price').style.display = 'block';
+            } else {
+                document.getElementById('modal-title').textContent = '혹시 이유를 알 수 있을까요?';
+                document.getElementById('modal-subtitle').innerHTML = '솔직한 의견이 <strong style="color:#fff;">제품 개선</strong>에 큰 도움이 됩니다.';
+                document.getElementById('step-reason').style.display = 'block';
+            }
+        });
+
+        /* Step 2A: 가격 선택 */
+        document.querySelectorAll('#step-price input[type=radio]').forEach(function(radio) {
+            radio.addEventListener('change', function() {
+                document.querySelectorAll('#step-price .price-opt').forEach(function(l) { l.classList.remove('selected'); });
+                this.closest('.price-opt').classList.add('selected');
+                document.getElementById('price-submit').disabled = false;
+            });
+        });
+
+        document.getElementById('price-submit').addEventListener('click', function() {
+            var selected = document.querySelector('#step-price input[type=radio]:checked');
             if (!selected) return;
             var price = selected.value;
 
-            submitBtn.disabled = true;
-            submitBtn.textContent = '저장 중...';
+            this.disabled = true;
+            this.textContent = '저장 중...';
 
             window.dataLayer = window.dataLayer || [];
             window.dataLayer.push({ event: 'price_survey_submit', price: price });
@@ -488,12 +539,36 @@
                 body: JSON.stringify({ email: lastEmail, price_wtp: price, type: 'price_survey' })
             }).catch(function() {});
 
-            document.getElementById('price-options').style.display = 'none';
-            submitBtn.style.display = 'none';
-            document.getElementById('modal-skip').style.display = 'none';
-            document.getElementById('price-thanks').style.display = 'block';
+            showThanks();
+        });
 
-            setTimeout(function() { modal.classList.remove('open'); }, 2000);
+        /* Step 2B: 이유 선택 */
+        document.querySelectorAll('#step-reason input[type=radio]').forEach(function(radio) {
+            radio.addEventListener('change', function() {
+                document.querySelectorAll('#step-reason .price-opt').forEach(function(l) { l.classList.remove('selected'); });
+                this.closest('.price-opt').classList.add('selected');
+                document.getElementById('reason-submit').disabled = false;
+            });
+        });
+
+        document.getElementById('reason-submit').addEventListener('click', function() {
+            var selected = document.querySelector('#step-reason input[type=radio]:checked');
+            if (!selected) return;
+            var reason = selected.value;
+
+            this.disabled = true;
+            this.textContent = '저장 중...';
+
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({ event: 'price_survey_no_pay', reason: reason });
+            if (window.va) window.va('event', { name: 'price_survey_no_pay' });
+
+            fetch(SHEETS_URL, {
+                method: 'POST',
+                body: JSON.stringify({ email: lastEmail, price_wtp: 'no', no_pay_reason: reason, type: 'price_survey' })
+            }).catch(function() {});
+
+            showThanks();
         });
 
         document.getElementById('modal-skip').addEventListener('click', function() {
